@@ -7,6 +7,26 @@ A local-first Progressive Web App for tracking investment positions across multi
 📊 See [docs/PROGRESS.md](./docs/PROGRESS.md) for detailed implementation status
 ✅ See [docs/CHECKLIST_STATUS.md](./docs/CHECKLIST_STATUS.md) for phase-by-phase completion
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard" width="800"/>
+</p>
+
+*Dashboard view with portfolio summary, TradingView heatmaps, and quick stats*
+
+<p align="center">
+  <img src="docs/screenshots/position-detail.png" alt="Position Detail" width="800"/>
+</p>
+
+*Position detail page with TradingView charts, ratings from Seeking Alpha and Motley Fool*
+
+<p align="center">
+  <img src="docs/screenshots/positions-list.png" alt="Positions List" width="800"/>
+</p>
+
+*Positions list with sector and watchlist information*
+
 ## Project Overview
 
 This application enables an investor to:

@@ -5,6 +5,7 @@ import { Toaster } from './components/ui/toaster'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { SearchCommand } from './components/SearchCommand'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import Dashboard from './pages/Dashboard'
 import PositionList from './pages/PositionList'
 import PositionDetail from './pages/PositionDetail'
@@ -29,17 +30,19 @@ function App() {
 
         {/* Main Content */}
         <main className="flex-1 container px-4 md:px-6 lg:px-8 py-6">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/positions" element={<PositionList />} />
-            <Route path="/positions/:symbol" element={<PositionDetail />} />
-            <Route path="/accounts" element={<AccountList />} />
-            <Route path="/accounts/:id" element={<AccountDetail />} />
-            <Route path="/watchlists" element={<WatchlistList />} />
-            <Route path="/watchlists/:id" element={<WatchlistDetail />} />
-            <Route path="/transactions" element={<TransactionList />} />
-            <Route path="/import" element={<Import />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/positions" element={<PositionList />} />
+              <Route path="/positions/:symbol" element={<PositionDetail />} />
+              <Route path="/accounts" element={<AccountList />} />
+              <Route path="/accounts/:id" element={<AccountDetail />} />
+              <Route path="/watchlists" element={<WatchlistList />} />
+              <Route path="/watchlists/:id" element={<WatchlistDetail />} />
+              <Route path="/transactions" element={<TransactionList />} />
+              <Route path="/import" element={<Import />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
 
         {/* Footer */}
