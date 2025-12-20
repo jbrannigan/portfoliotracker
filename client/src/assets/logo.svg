@@ -1,0 +1,106 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient for the main shape -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6" />
+      <stop offset="50%" style="stop-color:#2563EB" />
+      <stop offset="100%" style="stop-color:#1D4ED8" />
+    </linearGradient>
+    
+    <!-- Gradient for accent/glow -->
+    <linearGradient id="accentGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981" />
+      <stop offset="100%" style="stop-color:#34D399" />
+    </linearGradient>
+    
+    <!-- Subtle glow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#0a0a0a"/>
+  <circle cx="256" cy="256" r="240" fill="url(#primaryGradient)" opacity="0.1"/>
+  
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#primaryGradient)" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Inner decorative ring -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#1e293b" stroke-width="1" opacity="0.5"/>
+
+  <!-- Chart area background -->
+  <rect x="100" y="140" width="312" height="200" rx="12" fill="#111827" filter="url(#shadow)"/>
+  
+  <!-- Grid lines -->
+  <g stroke="#1e293b" stroke-width="1" opacity="0.5">
+    <line x1="120" y1="180" x2="392" y2="180"/>
+    <line x1="120" y1="220" x2="392" y2="220"/>
+    <line x1="120" y1="260" x2="392" y2="260"/>
+    <line x1="120" y1="300" x2="392" y2="300"/>
+  </g>
+  
+  <!-- Rising chart line (main) -->
+  <polyline 
+    points="130,310 170,290 210,295 250,260 290,240 330,200 370,170" 
+    fill="none" 
+    stroke="url(#accentGradient)" 
+    stroke-width="4" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    filter="url(#glow)"
+  />
+  
+  <!-- Area fill under the line -->
+  <polygon 
+    points="130,310 170,290 210,295 250,260 290,240 330,200 370,170 370,320 130,320" 
+    fill="url(#accentGradient)" 
+    opacity="0.15"
+  />
+  
+  <!-- Data points -->
+  <circle cx="130" cy="310" r="6" fill="#10B981"/>
+  <circle cx="170" cy="290" r="6" fill="#10B981"/>
+  <circle cx="210" cy="295" r="6" fill="#10B981"/>
+  <circle cx="250" cy="260" r="6" fill="#10B981"/>
+  <circle cx="290" cy="240" r="6" fill="#10B981"/>
+  <circle cx="330" cy="200" r="6" fill="#10B981"/>
+  <circle cx="370" cy="170" r="8" fill="#34D399" filter="url(#glow)"/>
+  
+  <!-- Arrow pointing up at the end -->
+  <path 
+    d="M370 170 L370 145 M370 145 L358 157 M370 145 L382 157" 
+    stroke="#34D399" 
+    stroke-width="4" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    filter="url(#glow)"
+  />
+
+  <!-- "PT" text mark -->
+  <text x="256" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="white" text-anchor="middle" letter-spacing="4">
+    PORTFOLIO
+  </text>
+  <text x="256" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="500" fill="#64748b" text-anchor="middle" letter-spacing="8">
+    TRACKER
+  </text>
+  
+  <!-- Small accent bars (like candlesticks) -->
+  <g opacity="0.6">
+    <rect x="145" y="285" width="8" height="25" rx="2" fill="#3B82F6"/>
+    <rect x="185" y="275" width="8" height="20" rx="2" fill="#3B82F6"/>
+    <rect x="225" y="265" width="8" height="30" rx="2" fill="#3B82F6"/>
+    <rect x="265" y="245" width="8" height="15" rx="2" fill="#3B82F6"/>
+    <rect x="305" y="220" width="8" height="20" rx="2" fill="#3B82F6"/>
+    <rect x="345" y="185" width="8" height="15" rx="2" fill="#3B82F6"/>
+  </g>
+</svg>

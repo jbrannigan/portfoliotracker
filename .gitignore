@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Database
+data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.bak
+*.orig
+
+# Personal/Private files
+test-schwab.csv
+portfolio-tracker-spec.zip
+portfolio-tracker-logos.zip
+.claude/
+
+# Documentation drafts (keep only production docs)
+PORTFOLIO_TRACKER_AUDIT_DOCUMENT.md
+OPENSTOCK_UI_TASKS.md
+NEXT_STEPS.md
+TODO_IMPLEMENT_LOGOS.md
