@@ -102,7 +102,7 @@ The Portfolio Tracker PWA backend is **100% complete** with full CRUD APIs, impo
 - [x] POST `/api/import/schwab` endpoint
 
 **Test Results:**
-- ✅ Jim's Roth IRA: 18 positions imported
+- ✅ My Roth IRA: 18 positions imported
 - ✅ TD Ameritrade IRA: 52 positions imported
 - ✅ Total: 70 positions across 2 accounts
 
@@ -315,13 +315,13 @@ The Portfolio Tracker PWA backend is **100% complete** with full CRUD APIs, impo
 
 ## Current Database State
 
-**Location:** `/Users/jimbrannigan/Documents/GitHub/portfoliotracker/server/data/portfolio.db`
+**Location:** `/Users/username/Documents/GitHub/portfoliotracker/server/data/portfolio.db`
 
 **Contents:**
 - 102 symbols (unique tickers)
 - 3 accounts:
   - Test IRA (ID: 1)
-  - Jim's Roth IRA (ID: 2) - 18 positions
+  - My Roth IRA (ID: 2) - 18 positions
   - TD Ameritrade IRA (ID: 3) - 52 positions
 - 70 total positions
 - 3 watchlists:
@@ -454,7 +454,7 @@ shared/
 
 ### Development Mode
 ```bash
-cd /Users/jimbrannigan/Documents/GitHub/portfoliotracker
+cd /Users/username/Documents/GitHub/portfoliotracker
 npm run dev
 ```
 - Server: http://localhost:3001
@@ -470,7 +470,7 @@ curl http://localhost:3001/api/symbols | jq .
 
 # Import Schwab CSV
 curl -X POST http://localhost:3001/api/import/schwab \
-  -F "file=@/Users/jimbrannigan/Public/Jim's Roth IRA-Positions-2025-12-17-164125.csv"
+  -F "file=@/Users/username/Public/My Roth IRA-Positions-2025-12-17-164125.csv"
 
 # Create transaction
 curl -X POST http://localhost:3001/api/transactions \
@@ -480,7 +480,7 @@ curl -X POST http://localhost:3001/api/transactions \
 
 ### Database Access
 ```bash
-sqlite3 /Users/jimbrannigan/Documents/GitHub/portfoliotracker/server/data/portfolio.db
+sqlite3 /Users/username/Documents/GitHub/portfoliotracker/server/data/portfolio.db
 
 .tables
 .schema symbols

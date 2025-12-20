@@ -19,7 +19,7 @@ The application imports data from three sources:
 ### File Structure
 
 ```csv
-"Positions for account Jim's Roth IRA ...207 as of 04:41 PM ET, 2025/12/17"
+"Positions for account My Roth IRA ... as of 04:41 PM ET, 2025/12/17"
 
 "Symbol","Description","","Price","Ratings","Qty (Quantity)",...
 "ALL","ALLSTATE CORP","N/A","$209.08","A","200",...
@@ -207,7 +207,7 @@ CLS,Celestica,4.326740233,2025-09-22T18:00:00Z,306.5,249.7421451,40.70913034,74.
 
 ```csv
 Date,Symbol,Type,Shares,Price,Amount,Account,Reason,Watchlist,Notes,URL
-2025-12-15,AAPL,BUY,100,150.00,15000.00,Jim's Roth IRA,watchlist_add,Alpha Picks,"Added on SA recommendation",https://seekingalpha.com/...
+2025-12-15,AAPL,BUY,100,150.00,15000.00,My Roth IRA,watchlist_add,Alpha Picks,"Added on SA recommendation",https://seekingalpha.com/...
 ```
 
 ### Excel Format
@@ -266,7 +266,7 @@ Response:
   "success": true,
   "account": {
     "id": 1,
-    "name": "Jim's Roth IRA",
+    "name": "My Roth IRA",
     "created": false
   },
   "positions": {

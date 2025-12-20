@@ -56,7 +56,7 @@ React PWA optimized for iPad with responsive desktop support. Uses Tailwind CSS 
 ├─────────────────────────────────────────────────────────────────┤
 │ Accounts                              Watchlist Performance     │
 │ ┌───────────────────────────────┐    ┌───────────────────────┐ │
-│ │ Jim's Roth IRA      $525,117  │    │ Alpha Picks    +15.2% │ │
+│ │ My Roth IRA      $525,117  │    │ Alpha Picks    +15.2% │ │
 │ │ TD Ameritrade IRA $2,674,883  │    │ Hidden Gems    +8.7%  │ │
 │ └───────────────────────────────┘    └───────────────────────┘ │
 ├─────────────────────────────────────────────────────────────────┤
@@ -139,7 +139,7 @@ React PWA optimized for iPad with responsive desktop support. Uses Tailwind CSS 
 │ Your Positions                                                  │
 │ ┌─────────────────────────────────────────────────────────────┐│
 │ │ Account           │ Shares │ Cost Basis │ Value    │ G/L %  ││
-│ │ Jim's Roth IRA    │ 100    │ $15,000    │ $19,550  │ +30.3% ││
+│ │ My Roth IRA    │ 100    │ $15,000    │ $19,550  │ +30.3% ││
 │ │ TD Ameritrade IRA │ 50     │ $8,000     │ $9,775   │ +22.2% ││
 │ │───────────────────────────────────────────────────────────────│
 │ │ TOTAL             │ 150    │ $23,000    │ $29,325  │ +27.5% ││
@@ -207,7 +207,7 @@ React PWA optimized for iPad with responsive desktop support. Uses Tailwind CSS 
 ┌─────────────────────────────────────────────────────────────────┐
 │ Log Transaction                                           [X]   │
 ├─────────────────────────────────────────────────────────────────┤
-│ Account:  [Jim's Roth IRA          ▼]                          │
+│ Account:  [My Roth IRA          ▼]                          │
 │ Symbol:   [AAPL_____________________]                           │
 │ Type:     (•) Buy  ( ) Sell                                     │
 │ Shares:   [100______]                                           │

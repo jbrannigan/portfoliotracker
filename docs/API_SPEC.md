@@ -82,7 +82,7 @@ Get detailed position summary for a single symbol.
   "positions": [
     {
       "account_id": 1,
-      "account_name": "Jim's Roth IRA",
+      "account_name": "My Roth IRA",
       "shares": 100,
       "cost_basis": 15000.00,
       "market_value": 19550.00,
@@ -161,7 +161,7 @@ List all brokerage accounts.
   "accounts": [
     {
       "id": 1,
-      "name": "Jim's Roth IRA",
+      "name": "My Roth IRA",
       "account_number_suffix": "207",
       "broker": "Schwab",
       "total_value": 525117.47,
@@ -181,7 +181,7 @@ Get account details with all positions.
 ```json
 {
   "id": 1,
-  "name": "Jim's Roth IRA",
+  "name": "My Roth IRA",
   "broker": "Schwab",
   "positions": [
     {
@@ -307,7 +307,7 @@ Import positions from Schwab CSV export.
   "success": true,
   "account": {
     "id": 1,
-    "name": "Jim's Roth IRA",
+    "name": "My Roth IRA",
     "created": false
   },
   "results": {
@@ -379,7 +379,7 @@ List transactions with optional filters.
       "symbol": "AAPL",
       "company_name": "Apple Inc",
       "account_id": 1,
-      "account_name": "Jim's Roth IRA",
+      "account_name": "My Roth IRA",
       "transaction_type": "BUY",
       "shares": 100,
       "price_per_share": 150.00,
@@ -490,7 +490,7 @@ Get summary data for dashboard view.
   "accounts": [
     {
       "id": 1,
-      "name": "Jim's Roth IRA",
+      "name": "My Roth IRA",
       "total_value": 525117.47,
       "day_change": -7933.63
     }

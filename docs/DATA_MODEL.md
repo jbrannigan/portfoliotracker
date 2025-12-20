@@ -31,7 +31,7 @@ Brokerage accounts being tracked.
 | Column | Type | Description |
 |--------|------|-------------|
 | id | INTEGER PRIMARY KEY | Auto-increment ID |
-| name | TEXT UNIQUE NOT NULL | Display name (e.g., "Jim's Roth IRA") |
+| name | TEXT UNIQUE NOT NULL | Display name (e.g., "My Roth IRA") |
 | account_number_suffix | TEXT | Last 3-4 digits for reference |
 | broker | TEXT | "Schwab", "Fidelity", etc. |
 | created_at | TEXT | ISO timestamp |
