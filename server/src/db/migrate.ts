@@ -6,6 +6,25 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Check if a column exists in a table
+ */
+function columnExists(tableName: string, columnName: string): boolean {
+  const info = db.prepare(`PRAGMA table_info(${tableName})`).all() as { name: string }[];
+  return info.some(col => col.name === columnName);
+}
+
+/**
+ * Run incremental migrations for schema changes
+ */
+function runIncrementalMigrations() {
+  // Migration: Add exchange column to quotes_cache
+  if (!columnExists('quotes_cache', 'exchange')) {
+    console.log('  Adding exchange column to quotes_cache...');
+    db.exec('ALTER TABLE quotes_cache ADD COLUMN exchange TEXT');
+  }
+}
+
 export function runMigrations() {
   console.log('Running database migrations...');
 
@@ -25,6 +44,9 @@ export function runMigrations() {
         db.exec(statement);
       }
     })();
+
+    // Run incremental migrations for existing databases
+    runIncrementalMigrations();
 
     console.log('Database migrations completed successfully');
 

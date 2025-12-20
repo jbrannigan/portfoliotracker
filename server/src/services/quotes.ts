@@ -26,6 +26,7 @@ interface AlphaVantageGlobalQuote {
 
 interface AlphaVantageOverview {
   Symbol: string;
+  Exchange: string;
   '52WeekHigh': string;
   '52WeekLow': string;
   MarketCapitalization: string;
@@ -160,6 +161,7 @@ async function fetchOverviewFromAPI(symbol: string): Promise<Partial<QuoteCache>
   }
 
   const result: Partial<QuoteCache> = {
+    exchange: overviewData.Exchange || undefined,
     high_52w: overviewData['52WeekHigh'] ? parseFloat(overviewData['52WeekHigh']) : undefined,
     low_52w: overviewData['52WeekLow'] ? parseFloat(overviewData['52WeekLow']) : undefined,
     market_cap: overviewData.MarketCapitalization ? parseFloat(overviewData.MarketCapitalization) : undefined,
@@ -177,11 +179,12 @@ async function fetchOverviewFromAPI(symbol: string): Promise<Partial<QuoteCache>
 function updateQuoteCache(data: Partial<QuoteCache> & { symbol: string }): QuoteCache {
   const stmt = db.prepare(`
     INSERT INTO quotes_cache (
-      symbol, price, change, change_percent, volume,
+      symbol, exchange, price, change, change_percent, volume,
       high_52w, low_52w, market_cap, pe_ratio, dividend_yield, beta,
       fetched_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
     ON CONFLICT(symbol) DO UPDATE SET
+      exchange = COALESCE(excluded.exchange, exchange),
       price = COALESCE(excluded.price, price),
       change = COALESCE(excluded.change, change),
       change_percent = COALESCE(excluded.change_percent, change_percent),
@@ -198,6 +201,7 @@ function updateQuoteCache(data: Partial<QuoteCache> & { symbol: string }): Quote
 
   return stmt.get(
     data.symbol,
+    data.exchange || null,
     data.price || null,
     data.change || null,
     data.change_percent || null,

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams, Link } from 'react-router-dom'
 import { symbolsApi } from '../services/api'
+import { buildExternalUrl } from '../config/externalLinks'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
@@ -22,6 +23,7 @@ interface Position {
 
 interface QuoteCache {
   symbol: string
+  exchange?: string
   price?: number
   change?: number
   change_percent?: number
@@ -194,7 +196,7 @@ function PositionDetail() {
       <div className="flex flex-wrap gap-2">
         <Button asChild variant="outline" size="sm">
           <a
-            href={`https://seekingalpha.com/symbol/${symbol}`}
+            href={buildExternalUrl('seekingAlpha', symbolInfo.symbol)}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -204,7 +206,7 @@ function PositionDetail() {
         </Button>
         <Button asChild variant="outline" size="sm">
           <a
-            href={`https://www.fool.com/quote/${symbol.includes(':') ? symbol.toLowerCase().replace(':', '/') : `nasdaq/${symbol.toLowerCase()}`}/`}
+            href={buildExternalUrl('motleyFool', symbolInfo.symbol, quote?.exchange)}
             target="_blank"
             rel="noopener noreferrer"
           >

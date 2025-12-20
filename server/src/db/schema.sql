@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 
 CREATE TABLE IF NOT EXISTS quotes_cache (
     symbol TEXT PRIMARY KEY REFERENCES symbols(symbol) ON DELETE CASCADE,
+    exchange TEXT,
     price REAL,
     change REAL,
     change_percent REAL,
@@ -118,6 +119,10 @@ CREATE TABLE IF NOT EXISTS quotes_cache (
     beta REAL,
     fetched_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Migration: Add exchange column if it doesn't exist
+-- SQLite doesn't support IF NOT EXISTS for ALTER TABLE, so we use a workaround
+-- This will fail silently if the column already exists
 
 -- Indexes for common queries
 

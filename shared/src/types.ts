@@ -99,6 +99,7 @@ export interface Transaction {
 
 export interface QuoteCache {
   symbol: string;
+  exchange?: string;
   price?: number;
   change?: number;
   change_percent?: number;
