@@ -204,7 +204,7 @@ function PositionDetail() {
         </Button>
         <Button asChild variant="outline" size="sm">
           <a
-            href={`https://www.fool.com/quote/nasdaq/${symbol.toLowerCase()}/`}
+            href={`https://www.fool.com/quote/${symbol.includes(':') ? symbol.toLowerCase().replace(':', '/') : `nasdaq/${symbol.toLowerCase()}`}/`}
             target="_blank"
             rel="noopener noreferrer"
           >
