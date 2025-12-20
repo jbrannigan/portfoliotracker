@@ -4,6 +4,8 @@ node_modules/
 # Build outputs
 dist/
 *.tsbuildinfo
+shared/src/*.js
+shared/src/*.d.ts
 
 # Environment
 .env
@@ -57,3 +59,4 @@ PORTFOLIO_TRACKER_AUDIT_DOCUMENT.md
 OPENSTOCK_UI_TASKS.md
 NEXT_STEPS.md
 TODO_IMPLEMENT_LOGOS.md
+SESSION_SUMMARY.md
