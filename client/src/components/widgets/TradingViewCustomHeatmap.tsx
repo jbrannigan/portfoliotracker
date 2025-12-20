@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react'
-
 interface WatchlistMember {
   symbol: string
   company_name?: string

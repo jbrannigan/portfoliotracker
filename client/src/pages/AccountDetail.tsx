@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
-import { ArrowLeft, CreditCard, Building2, Wallet, BarChart3, TrendingUp, TrendingDown, Layers } from 'lucide-react'
+import { ArrowLeft, CreditCard, Building2, Wallet, BarChart3, TrendingUp, Layers } from 'lucide-react'
 
 interface Account {
   id: number

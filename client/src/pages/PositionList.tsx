@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { positionsApi, accountsApi, watchlistsApi } from '../services/api'
+import { positionsApi, watchlistsApi } from '../services/api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button'
@@ -18,11 +18,6 @@ interface PositionSummary {
   total_cost_basis: number
   watchlist_ids: number[]
   watchlists: string[]
-}
-
-interface Account {
-  id: number
-  name: string
 }
 
 interface Watchlist {
@@ -53,7 +48,7 @@ function PositionList() {
 
   // Get unique sectors
   const sectors = useMemo(() => {
-    const uniqueSectors = new Set(positions.map(p => p.sector).filter(Boolean))
+    const uniqueSectors = new Set(positions.map(p => p.sector).filter((s): s is string => Boolean(s)))
     return Array.from(uniqueSectors).sort()
   }, [positions])
 

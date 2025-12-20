@@ -6,7 +6,7 @@ import { Badge } from '../components/ui/badge'
 import { Skeleton } from '../components/ui/skeleton'
 import { TradingViewHeatmap } from '../components/widgets/TradingViewHeatmap'
 import { TradingViewTickerTape } from '../components/widgets/TradingViewTickerTape'
-import { TrendingUp, TrendingDown, Wallet, Star, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { TrendingUp, Star, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
 interface HealthStatus {
   status: string

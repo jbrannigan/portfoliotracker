@@ -1,3 +1,44 @@
+import type {
+  Symbol as StockSymbol,
+  Account,
+  Watchlist,
+  WatchlistMember,
+  Position,
+  PositionSummary as BasePositionSummary,
+  Transaction,
+  QuoteCache,
+  SeekingAlphaRating,
+  MotleyFoolRating,
+  CreateAccountRequest,
+  CreateWatchlistRequest,
+  UpdateWatchlistRequest,
+  CreateTransactionRequest,
+  ImportResult,
+} from '../../../shared/src/types'
+
+// Extended response types that include joined/computed data from API
+export interface PositionSummary extends BasePositionSummary {
+  watchlist_ids: number[]
+}
+
+export interface SymbolDetail {
+  symbol: StockSymbol
+  positions: (Position & { account_name?: string })[]
+  ratings: {
+    seekingAlpha: (SeekingAlphaRating & { watchlist_name?: string })[]
+    motleyFool: (MotleyFoolRating & { watchlist_name?: string })[]
+  }
+  quote: QuoteCache | null
+  watchlists: Watchlist[]
+}
+
+export interface TransactionsResponse {
+  transactions: Transaction[]
+  total: number
+  limit?: number
+  offset: number
+}
+
 // API base URL - uses Vite proxy in dev, or can be configured for production
 const API_BASE = '/api'
 
@@ -31,16 +72,16 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
 
 // Symbols
 export const symbolsApi = {
-  getAll: () => fetchJson('/symbols'),
-  getOne: (symbol: string) => fetchJson(`/symbols/${symbol}`),
-  getDetail: (symbol: string) => fetchJson(`/symbols/${symbol}/detail`),
+  getAll: () => fetchJson<StockSymbol[]>('/symbols'),
+  getOne: (symbol: string) => fetchJson<StockSymbol>(`/symbols/${symbol}`),
+  getDetail: (symbol: string) => fetchJson<SymbolDetail>(`/symbols/${symbol}/detail`),
 }
 
 // Accounts
 export const accountsApi = {
-  getAll: () => fetchJson('/accounts'),
-  getOne: (id: number) => fetchJson(`/accounts/${id}`),
-  create: (data: any) => fetchJson('/accounts', {
+  getAll: () => fetchJson<Account[]>('/accounts'),
+  getOne: (id: number) => fetchJson<Account>(`/accounts/${id}`),
+  create: (data: CreateAccountRequest) => fetchJson<Account>('/accounts', {
     method: 'POST',
     body: JSON.stringify(data),
   }),
@@ -48,14 +89,14 @@ export const accountsApi = {
 
 // Watchlists
 export const watchlistsApi = {
-  getAll: () => fetchJson('/watchlists'),
-  getOne: (id: number) => fetchJson(`/watchlists/${id}`),
-  getMembers: (id: number) => fetchJson(`/watchlists/${id}/members`),
-  create: (data: any) => fetchJson('/watchlists', {
+  getAll: () => fetchJson<Watchlist[]>('/watchlists'),
+  getOne: (id: number) => fetchJson<Watchlist>(`/watchlists/${id}`),
+  getMembers: (id: number) => fetchJson<WatchlistMember[]>(`/watchlists/${id}/members`),
+  create: (data: CreateWatchlistRequest) => fetchJson<Watchlist>('/watchlists', {
     method: 'POST',
     body: JSON.stringify(data),
   }),
-  update: (id: number, data: any) => fetchJson(`/watchlists/${id}`, {
+  update: (id: number, data: UpdateWatchlistRequest) => fetchJson<Watchlist>(`/watchlists/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   }),
@@ -63,26 +104,26 @@ export const watchlistsApi = {
 
 // Positions
 export const positionsApi = {
-  getSummary: () => fetchJson('/positions/summary'),
-  getAll: () => fetchJson('/positions'),
-  getBySymbol: (symbol: string) => fetchJson(`/positions/by-symbol/${symbol}`),
+  getSummary: () => fetchJson<PositionSummary[]>('/positions/summary'),
+  getAll: () => fetchJson<Position[]>('/positions'),
+  getBySymbol: (symbol: string) => fetchJson<Position[]>(`/positions/by-symbol/${symbol}`),
 }
 
 // Transactions
 export const transactionsApi = {
   getAll: (params?: Record<string, string>) => {
     const query = params ? `?${new URLSearchParams(params)}` : ''
-    return fetchJson(`/transactions${query}`)
+    return fetchJson<TransactionsResponse>(`/transactions${query}`)
   },
   getRecent: (limit?: number) => {
     const query = limit ? `?limit=${limit}` : ''
-    return fetchJson(`/transactions/recent${query}`)
+    return fetchJson<Transaction[]>(`/transactions/recent${query}`)
   },
-  create: (data: any) => fetchJson('/transactions', {
+  create: (data: CreateTransactionRequest) => fetchJson<Transaction>('/transactions', {
     method: 'POST',
     body: JSON.stringify(data),
   }),
-  delete: (id: number) => fetchJson(`/transactions/${id}`, {
+  delete: (id: number) => fetchJson<{ success: boolean }>(`/transactions/${id}`, {
     method: 'DELETE',
   }),
   exportCsv: (params?: Record<string, string>) => {
@@ -99,19 +140,19 @@ export const transactionsApi = {
 export const quotesApi = {
   getOne: (symbol: string, forceRefresh = false) => {
     const query = forceRefresh ? '?forceRefresh=true' : ''
-    return fetchJson(`/quotes/${symbol}${query}`)
+    return fetchJson<QuoteCache>(`/quotes/${symbol}${query}`)
   },
-  getAll: () => fetchJson('/quotes'),
-  refresh: (symbols: string[]) => fetchJson('/quotes/refresh', {
+  getAll: () => fetchJson<QuoteCache[]>('/quotes'),
+  refresh: (symbols: string[]) => fetchJson<{ refreshed: string[]; errors: string[] }>('/quotes/refresh', {
     method: 'POST',
     body: JSON.stringify({ symbols }),
   }),
-  getRateLimitStatus: () => fetchJson('/quotes/status/rate-limit'),
+  getRateLimitStatus: () => fetchJson<{ remaining: number; resetAt: string }>('/quotes/status/rate-limit'),
 }
 
 // Import
 export const importApi = {
-  schwab: async (file: File) => {
+  schwab: async (file: File): Promise<ImportResult> => {
     const formData = new FormData()
     formData.append('file', file)
     const response = await fetch(`${API_BASE}/import/schwab`, {
@@ -128,7 +169,7 @@ export const importApi = {
     }
     return response.json()
   },
-  seekingAlpha: async (file: File, watchlistId: number) => {
+  seekingAlpha: async (file: File, watchlistId: number): Promise<ImportResult> => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('watchlist_id', watchlistId.toString())
@@ -146,7 +187,7 @@ export const importApi = {
     }
     return response.json()
   },
-  motleyFool: async (file: File, watchlistId: number) => {
+  motleyFool: async (file: File, watchlistId: number): Promise<ImportResult> => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('watchlist_id', watchlistId.toString())
@@ -199,7 +240,7 @@ export const adminApi = {
 // Extended accounts API for admin
 export const accountsAdminApi = {
   ...accountsApi,
-  update: (id: number, data: any) => fetchJson(`/accounts/${id}`, {
+  update: (id: number, data: Partial<CreateAccountRequest>) => fetchJson<Account>(`/accounts/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   }),

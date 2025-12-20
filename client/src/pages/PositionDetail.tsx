@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
-import { Separator } from '../components/ui/separator'
 import { TradingViewChart } from '../components/widgets/TradingViewChart'
 import { TradingViewSymbolInfo } from '../components/widgets/TradingViewSymbolInfo'
 import { TradingViewTechnicalAnalysis } from '../components/widgets/TradingViewTechnicalAnalysis'

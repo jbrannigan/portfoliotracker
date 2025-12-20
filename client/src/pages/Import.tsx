@@ -179,11 +179,18 @@ function Import() {
   const motleyFoolWatchlists = watchlists.filter(w => w.source === 'motley_fool')
 
   // Calculate current step for progress indicator
-  const getCurrentStep = () => {
+  const getCurrentStep = (): number => {
     if (!activeImport) return 0
-    if (activeImport && !selectedFile) return 1
-    if (activeImport !== 'schwab' && !selectedWatchlist) return 2
-    return 3
+    if (activeImport === 'schwab') {
+      // Schwab: 1=source, 2=upload, 3=ready
+      if (!selectedFile) return 1
+      return 3
+    } else {
+      // SA/MF: 1=source, 2=watchlist, 3=upload, 4=ready
+      if (!selectedWatchlist) return 2
+      if (!selectedFile) return 3
+      return 4
+    }
   }
 
   const currentStep = getCurrentStep()
