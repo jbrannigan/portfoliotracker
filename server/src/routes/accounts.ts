@@ -1,6 +1,7 @@
 import express from 'express';
 import * as accountsService from '../services/accounts.js';
 import * as positionsService from '../services/positions.js';
+import * as adminService from '../services/admin.js';
 
 export const accountsRouter = express.Router();
 
@@ -214,9 +215,9 @@ accountsRouter.delete('/:id', (req, res) => {
       });
     }
 
-    const success = accountsService.deleteAccount(id);
+    const result = adminService.deleteAccountWithCounts(id);
 
-    if (!success) {
+    if (!result) {
       return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
@@ -225,7 +226,7 @@ accountsRouter.delete('/:id', (req, res) => {
       });
     }
 
-    res.status(204).send();
+    res.json(result);
   } catch (error: any) {
     res.status(500).json({
       error: {

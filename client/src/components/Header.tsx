@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Menu, Settings } from 'lucide-react'
+import { Search, Menu, Settings, Shield } from 'lucide-react'
 import { Button } from './ui/button'
 import {
   DropdownMenu,
@@ -93,6 +93,13 @@ export function Header({ onSearchClick }: HeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <span>Settings</span>
             </DropdownMenuItem>

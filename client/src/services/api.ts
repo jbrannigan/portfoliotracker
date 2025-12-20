@@ -166,4 +166,66 @@ export const importApi = {
   },
 }
 
+// Admin
+export const adminApi = {
+  getStats: () => fetchJson<{
+    orphanSymbols: number
+    transactions: number
+    quotesCache: number
+    removedMembers: number
+  }>('/admin/stats'),
+
+  downloadBackup: () => {
+    window.location.href = `${API_BASE}/admin/backup`
+  },
+
+  deleteOrphanSymbols: () => fetchJson<{ success: boolean; deleted: number }>('/admin/orphan-symbols', {
+    method: 'DELETE',
+  }),
+
+  clearTransactions: () => fetchJson<{ success: boolean; deleted: number }>('/admin/transactions', {
+    method: 'DELETE',
+  }),
+
+  clearQuotesCache: () => fetchJson<{ success: boolean; deleted: number }>('/admin/quotes-cache', {
+    method: 'DELETE',
+  }),
+
+  purgeRemovedMembers: () => fetchJson<{ success: boolean; deleted: number }>('/admin/purge-removed-members', {
+    method: 'DELETE',
+  }),
+}
+
+// Extended accounts API for admin
+export const accountsAdminApi = {
+  ...accountsApi,
+  update: (id: number, data: any) => fetchJson(`/accounts/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  }),
+  delete: (id: number) => fetchJson<{
+    success: boolean
+    deleted: { account: string; positions: number }
+  }>(`/accounts/${id}`, {
+    method: 'DELETE',
+  }),
+}
+
+// Extended watchlists API for admin
+export const watchlistsAdminApi = {
+  ...watchlistsApi,
+  delete: (id: number) => fetchJson<{
+    success: boolean
+    deleted: { watchlist: string; members: number; ratings: number }
+  }>(`/watchlists/${id}`, {
+    method: 'DELETE',
+  }),
+  removeSymbol: (id: number, symbol: string) => fetchJson<{
+    success: boolean
+    removed: { symbol: string; watchlist: string }
+  }>(`/watchlists/${id}/symbols/${symbol}`, {
+    method: 'DELETE',
+  }),
+}
+
 export { ApiError }

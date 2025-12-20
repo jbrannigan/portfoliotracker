@@ -18,6 +18,7 @@ import { importRouter } from './routes/import.js';
 import { quotesRouter } from './routes/quotes.js';
 import { transactionsRouter } from './routes/transactions.js';
 import { positionsRouter } from './routes/positions.js';
+import { adminRouter } from './routes/admin.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,6 +40,7 @@ app.use('/api/positions', positionsRouter);
 app.use('/api/import', importRouter);
 app.use('/api/quotes', quotesRouter);
 app.use('/api/transactions', transactionsRouter);
+app.use('/api/admin', adminRouter);
 
 app.listen(Number(PORT), HOST, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);

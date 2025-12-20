@@ -15,6 +15,7 @@ import WatchlistList from './pages/WatchlistList'
 import WatchlistDetail from './pages/WatchlistDetail'
 import TransactionList from './pages/TransactionList'
 import Import from './pages/Import'
+import Admin from './pages/Admin'
 
 function App() {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -41,6 +42,7 @@ function App() {
               <Route path="/watchlists/:id" element={<WatchlistDetail />} />
               <Route path="/transactions" element={<TransactionList />} />
               <Route path="/import" element={<Import />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </ErrorBoundary>
         </main>

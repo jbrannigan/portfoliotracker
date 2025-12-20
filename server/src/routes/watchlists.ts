@@ -2,6 +2,7 @@ import express from 'express';
 import * as watchlistsService from '../services/watchlists.js';
 import * as positionsService from '../services/positions.js';
 import * as quotesService from '../services/quotes.js';
+import * as adminService from '../services/admin.js';
 import { db } from '../db/database.js';
 
 export const watchlistsRouter = express.Router();
@@ -189,9 +190,9 @@ watchlistsRouter.delete('/:id', (req, res) => {
       });
     }
 
-    const success = watchlistsService.deleteWatchlist(id);
+    const result = adminService.deleteWatchlistWithCounts(id);
 
-    if (!success) {
+    if (!result) {
       return res.status(404).json({
         error: {
           code: 'NOT_FOUND',
@@ -200,12 +201,52 @@ watchlistsRouter.delete('/:id', (req, res) => {
       });
     }
 
-    res.status(204).send();
+    res.json(result);
   } catch (error: any) {
     res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Failed to delete watchlist',
+        details: error.message
+      }
+    });
+  }
+});
+
+/**
+ * DELETE /api/watchlists/:id/symbols/:symbol - Remove symbol from watchlist
+ */
+watchlistsRouter.delete('/:id/symbols/:symbol', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const symbol = req.params.symbol.toUpperCase();
+
+    if (isNaN(id)) {
+      return res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid watchlist ID'
+        }
+      });
+    }
+
+    const result = adminService.removeSymbolFromWatchlist(id, symbol);
+
+    if (!result) {
+      return res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `Symbol ${symbol} not found in watchlist or already removed`
+        }
+      });
+    }
+
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Failed to remove symbol from watchlist',
         details: error.message
       }
     });
