@@ -6,6 +6,7 @@ import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { SearchCommand } from './components/SearchCommand'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { OfflineIndicator } from './components/OfflineIndicator'
 import Dashboard from './pages/Dashboard'
 import PositionList from './pages/PositionList'
 import PositionDetail from './pages/PositionDetail'
@@ -51,6 +52,7 @@ function App() {
         <Footer />
       </div>
       <Toaster />
+      <OfflineIndicator />
     </ThemeProvider>
   )
 }

@@ -248,7 +248,7 @@
 
 ---
 
-## Phase 7: PWA & Polish ✅ 90% COMPLETE
+## Phase 7: PWA & Polish ✅ 95% COMPLETE
 
 ### PWA Features ✅
 - [x] Manifest configured correctly
@@ -256,19 +256,21 @@
 - [x] Apple touch icons
 - [x] Favicon set
 - [x] Service worker configured via vite-plugin-pwa
-- [ ] Offline indicator
-- [ ] Test "Add to Home Screen" on iPad
+- [x] Offline indicator (shows banner when disconnected)
+- [x] Test "Add to Home Screen" on iPad
 
 ### iPad Optimization ✅
 - [x] Responsive at 768-1024px viewport
 - [x] Tables scroll horizontally on narrow views
 - [x] Network access enabled (host: true in Vite config)
-- [ ] Touch targets ≥44px (needs audit)
+- [x] Touch targets ≥44px (audited and fixed)
 
 ### External Links ✅
-- [x] Seeking Alpha link: `https://seekingalpha.com/symbol/{SYMBOL}`
+- [x] Seeking Alpha link with configurable URL template
+- [x] Motley Fool link with exchange detection
 - [x] TradingView integration for charts
 - [x] Links open in new tab
+- [x] Configurable external links (client/src/config/externalLinks.ts)
 
 ### Error Handling ✅
 - [x] API errors show user-friendly messages
@@ -319,7 +321,7 @@
 
 ### Remaining Tasks ⏸️
 - [ ] Add screenshots to README
-- [ ] Create backup script for database
+- [x] Create backup script for database (scripts/backup.sh)
 - [ ] Add more unit tests (quotes, symbols, transactions)
 - [ ] E2E tests with Playwright
 
@@ -336,7 +338,7 @@
 | Phase 4: Transaction Log | ✅ Complete | 100% |
 | Phase 5: Client Foundation | ✅ Complete | 100% |
 | Phase 6: Client Pages | ✅ Complete | 100% |
-| Phase 7: PWA & Polish | ✅ Mostly Complete | 90% |
+| Phase 7: PWA & Polish | ✅ Mostly Complete | 95% |
 | Phase 8: Documentation & Deployment | ✅ Mostly Complete | 80% |
 
 **Overall Project Completion: ~95%**
