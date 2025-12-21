@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Skeleton } from '../components/ui/skeleton'
+import { StatusBadge, StatusType } from '../components/StatusBadge'
 import { TradingViewMiniChart } from '../components/widgets/TradingViewMiniChart'
 import { ArrowLeft, Star, DollarSign, TrendingUp, TrendingDown, Wallet, BarChart3, Target } from 'lucide-react'
 
@@ -158,6 +159,26 @@ function WatchlistDetail() {
         Motley Fool
       </Badge>
     )
+  }
+
+  // Calculate allocation status for a member (10% tolerance)
+  const getAllocationStatus = (member: Member): StatusType | null => {
+    if (!targetPerSymbol) return null
+
+    const actualValue = member.current_value || 0
+
+    // No position
+    if (member.total_shares === 0 && targetPerSymbol > 0) {
+      return 'buy'
+    }
+
+    // Calculate variance
+    const variance = (actualValue - targetPerSymbol) / targetPerSymbol
+
+    if (variance < -0.10) return 'buy_more'
+    if (variance > 0.10) return 'sell_some'
+
+    return 'on_target'
   }
 
   return (
@@ -320,6 +341,7 @@ function WatchlistDetail() {
                   ? member.current_value - targetPerSymbol
                   : null
                 const gainLoss = (member.current_value || 0) - member.total_cost_basis
+                const allocationStatus = getAllocationStatus(member)
 
                 return (
                   <Card key={member.symbol} className="overflow-hidden">
@@ -332,12 +354,17 @@ function WatchlistDetail() {
                       {/* Right: Details */}
                       <div className="p-6 space-y-4">
                         <div>
-                          <Link
-                            to={`/positions/${member.symbol}`}
-                            className="text-2xl font-bold text-primary hover:underline"
-                          >
-                            {member.symbol}
-                          </Link>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Link
+                              to={`/positions/${member.symbol}`}
+                              className="text-2xl font-bold text-primary hover:underline"
+                            >
+                              {member.symbol}
+                            </Link>
+                            {allocationStatus && allocationStatus !== 'on_target' && (
+                              <StatusBadge status={allocationStatus} />
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground mt-1">
                             {member.company_name || '-'}
                           </p>

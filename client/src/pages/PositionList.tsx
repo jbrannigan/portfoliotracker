@@ -8,6 +8,7 @@ import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
 import { Skeleton } from '../components/ui/skeleton'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
+import { StatusBadge, StatusType } from '../components/StatusBadge'
 import { Search, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp } from 'lucide-react'
 
 interface PositionSummary {
@@ -20,6 +21,12 @@ interface PositionSummary {
   watchlists: string[]
 }
 
+interface DroppedLink {
+  symbol: string
+  watchlist_name: string
+  dropped_at: string
+}
+
 interface Watchlist {
   id: number
   name: string
@@ -28,11 +35,13 @@ interface Watchlist {
 
 type SortField = 'symbol' | 'company_name' | 'total_shares' | 'sector'
 type SortDirection = 'asc' | 'desc'
+type StatusFilter = 'all' | 'needs_action' | 'dropped' | 'on_target'
 
 function PositionList() {
   const [searchTerm, setSearchTerm] = useState('')
   const [watchlistFilter, setWatchlistFilter] = useState<string>('')
   const [sectorFilter, setSectorFilter] = useState<string>('')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [sortField, setSortField] = useState<SortField>('symbol')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
@@ -45,6 +54,23 @@ function PositionList() {
     queryKey: ['watchlists'],
     queryFn: watchlistsApi.getAll
   })
+
+  const { data: droppedLinks = [] } = useQuery<DroppedLink[]>({
+    queryKey: ['positions', 'dropped-links'],
+    queryFn: positionsApi.getDroppedLinks
+  })
+
+  // Create a set of dropped symbols for quick lookup
+  const droppedSymbols = useMemo(() => {
+    return new Set(droppedLinks.map(link => link.symbol))
+  }, [droppedLinks])
+
+  // Get status for a position
+  const getPositionStatus = (symbol: string): StatusType | null => {
+    if (droppedSymbols.has(symbol)) return 'dropped'
+    // TODO: Add allocation status checks when implemented
+    return null
+  }
 
   // Get unique sectors
   const sectors = useMemo(() => {
@@ -72,6 +98,14 @@ function PositionList() {
       // Sector filter
       if (sectorFilter && position.sector !== sectorFilter) return false
 
+      // Status filter
+      if (statusFilter !== 'all') {
+        const status = getPositionStatus(position.symbol)
+        if (statusFilter === 'dropped' && status !== 'dropped') return false
+        if (statusFilter === 'needs_action' && !status) return false
+        if (statusFilter === 'on_target' && status) return false
+      }
+
       return true
     })
 
@@ -96,7 +130,7 @@ function PositionList() {
     })
 
     return filtered
-  }, [positions, searchTerm, watchlistFilter, sectorFilter, sortField, sortDirection])
+  }, [positions, searchTerm, watchlistFilter, sectorFilter, statusFilter, sortField, sortDirection, droppedSymbols])
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -159,7 +193,7 @@ function PositionList() {
           <CardDescription>Search and filter your positions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {/* Search */}
             <div className="space-y-2">
               <label htmlFor="search" className="text-sm font-medium">
@@ -209,6 +243,24 @@ function PositionList() {
               </Select>
             </div>
 
+            {/* Status Filter */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Status
+              </label>
+              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Statuses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Positions</SelectItem>
+                  <SelectItem value="needs_action">Needs Action</SelectItem>
+                  <SelectItem value="dropped">Dropped</SelectItem>
+                  <SelectItem value="on_target">On Target</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Clear Filters */}
             <div className="flex items-end">
               <Button
@@ -217,6 +269,7 @@ function PositionList() {
                   setSearchTerm('')
                   setWatchlistFilter('')
                   setSectorFilter('')
+                  setStatusFilter('all')
                 }}
                 className="w-full"
               >
@@ -286,6 +339,9 @@ function PositionList() {
                           <SortIcon field="sector" />
                         </div>
                       </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-32">
+                        Status
+                      </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-48">
                         Watchlists
                       </th>
@@ -319,6 +375,16 @@ function PositionList() {
                           ) : (
                             '-'
                           )}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          {(() => {
+                            const status = getPositionStatus(position.symbol)
+                            return status ? (
+                              <StatusBadge status={status} />
+                            ) : (
+                              <span className="text-muted-foreground text-sm">—</span>
+                            )
+                          })()}
                         </td>
                         <td className="px-4 py-4">
                           {position.watchlists.length > 0 ? (

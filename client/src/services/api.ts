@@ -14,6 +14,9 @@ import type {
   UpdateWatchlistRequest,
   CreateTransactionRequest,
   ImportResult,
+  PositionWatchlistLink,
+  PositionWatchlistLinkDetail,
+  NeedsAttentionItem,
 } from '../../../shared/src/types'
 
 // Extended response types that include joined/computed data from API
@@ -107,6 +110,31 @@ export const positionsApi = {
   getSummary: () => fetchJson<PositionSummary[]>('/positions/summary'),
   getAll: () => fetchJson<Position[]>('/positions'),
   getBySymbol: (symbol: string) => fetchJson<Position[]>(`/positions/by-symbol/${symbol}`),
+  getDroppedLinks: () => fetchJson<Array<{
+    position_id: number
+    watchlist_id: number
+    watchlist_name: string
+    symbol: string
+    company_name: string | null
+    shares: number
+    dropped_at: string
+  }>>('/positions/dropped-links'),
+  getWatchlistLinks: (positionId: number) => fetchJson<{
+    position_id: number
+    links: PositionWatchlistLinkDetail[]
+  }>(`/positions/${positionId}/watchlist-links`),
+  createWatchlistLink: (positionId: number, watchlistId: number) =>
+    fetchJson<PositionWatchlistLink>(`/positions/${positionId}/watchlist-links`, {
+      method: 'POST',
+      body: JSON.stringify({ watchlist_id: watchlistId }),
+    }),
+  deleteWatchlistLink: (positionId: number, watchlistId: number) =>
+    fetch(`${API_BASE}/positions/${positionId}/watchlist-links/${watchlistId}`, {
+      method: 'DELETE',
+    }).then(res => {
+      if (!res.ok) throw new ApiError(res.status, 'Failed to delete link')
+      return { success: true }
+    }),
 }
 
 // Transactions
@@ -267,6 +295,11 @@ export const watchlistsAdminApi = {
   }>(`/watchlists/${id}/symbols/${symbol}`, {
     method: 'DELETE',
   }),
+}
+
+// Dashboard
+export const dashboardApi = {
+  getNeedsAttention: () => fetchJson<{ items: NeedsAttentionItem[] }>('/dashboard/needs-attention'),
 }
 
 export { ApiError }

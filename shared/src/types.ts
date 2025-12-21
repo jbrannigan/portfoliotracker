@@ -31,6 +31,8 @@ export interface Position {
   symbol: string;
   shares: number;
   cost_basis?: number;
+  status: 'open' | 'closed';
+  closed_at?: string;
   updated_at: string;
 }
 
@@ -40,6 +42,48 @@ export interface WatchlistMember {
   symbol: string;
   added_at: string;
   removed_at?: string;
+}
+
+export interface PositionWatchlistLink {
+  id: number;
+  position_id: number;
+  watchlist_id: number;
+  status: 'active' | 'dropped';
+  linked_at: string;
+  dropped_at?: string;
+}
+
+// Extended type with watchlist info for display
+export interface PositionWatchlistLinkDetail extends PositionWatchlistLink {
+  watchlist_name: string;
+  watchlist_source: 'seeking_alpha' | 'motley_fool';
+}
+
+// Allocation status types
+export type AllocationStatus = 'at_target' | 'underweight' | 'overweight' | 'no_position';
+
+export interface AllocationInfo {
+  watchlist_id: number;
+  watchlist_name: string;
+  recommendation_status: 'active' | 'dropped';
+  target_amount: number | null;
+  actual_amount: number;
+  variance_percent?: number;
+  allocation_status: AllocationStatus | 'n/a';
+}
+
+// Needs attention item for dashboard
+export interface NeedsAttentionItem {
+  type: 'dropped' | 'buy' | 'underweight' | 'overweight';
+  symbol: string;
+  watchlist: string;
+  message: string;
+  position_value?: number;
+  target_amount?: number;
+  actual_amount?: number;
+  buy_amount?: number;
+  sell_amount?: number;
+  dropped_at?: string;
 }
 
 // Ratings Types

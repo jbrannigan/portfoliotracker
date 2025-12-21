@@ -1,15 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams, Link } from 'react-router-dom'
-import { symbolsApi } from '../services/api'
+import { symbolsApi, positionsApi } from '../services/api'
 import { buildExternalUrl } from '../config/externalLinks'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
+import { StatusBadge } from '../components/StatusBadge'
 import { TradingViewChart } from '../components/widgets/TradingViewChart'
 import { TradingViewSymbolInfo } from '../components/widgets/TradingViewSymbolInfo'
 import { TradingViewTechnicalAnalysis } from '../components/widgets/TradingViewTechnicalAnalysis'
-import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink, Star, Wallet } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink, Star, Wallet, AlertTriangle } from 'lucide-react'
 
 interface Position {
   id: number
@@ -103,6 +104,15 @@ function PositionDetail() {
     enabled: !!symbol
   })
 
+  // Fetch dropped links to show status
+  const { data: droppedLinks = [] } = useQuery({
+    queryKey: ['positions', 'dropped-links'],
+    queryFn: positionsApi.getDroppedLinks
+  })
+
+  // Filter dropped links for this symbol
+  const symbolDroppedLinks = droppedLinks.filter(link => link.symbol === symbol)
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -160,7 +170,12 @@ function PositionDetail() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">{symbol}</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-4xl font-bold tracking-tight">{symbol}</h1>
+            {symbolDroppedLinks.length > 0 && (
+              <StatusBadge status="dropped" />
+            )}
+          </div>
           {symbolInfo.company_name && (
             <p className="text-xl text-muted-foreground">{symbolInfo.company_name}</p>
           )}
@@ -482,36 +497,62 @@ function PositionDetail() {
         </div>
       )}
 
-      {/* Watchlist Membership */}
+      {/* Watchlist Recommendations */}
       {watchlists.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Star className="h-5 w-5" />
-              Watchlist Membership
+              Watchlist Recommendations
             </CardTitle>
-            <CardDescription>This symbol appears in {watchlists.length} watchlist{watchlists.length !== 1 ? 's' : ''}</CardDescription>
+            <CardDescription>
+              This symbol appears in {watchlists.length} watchlist{watchlists.length !== 1 ? 's' : ''}
+              {symbolDroppedLinks.length > 0 && (
+                <span className="text-destructive ml-2">
+                  ({symbolDroppedLinks.length} dropped)
+                </span>
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
-              {watchlists.map((watchlist) => (
-                <div key={watchlist.id} className="rounded-lg border p-4 hover:bg-accent/50 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <p className="font-medium">{watchlist.name}</p>
-                      <Badge variant="secondary" className="text-xs">
-                        {watchlist.source.replace('_', ' ')}
-                      </Badge>
-                    </div>
-                    {watchlist.dollar_allocation && (
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">Allocation</p>
-                        <p className="font-semibold">${watchlist.dollar_allocation.toLocaleString()}</p>
+              {watchlists.map((watchlist) => {
+                const droppedLink = symbolDroppedLinks.find(l => l.watchlist_name === watchlist.name)
+                const isDropped = !!droppedLink
+
+                return (
+                  <div
+                    key={watchlist.id}
+                    className={`rounded-lg border p-4 transition-colors ${
+                      isDropped ? 'border-destructive/50 bg-destructive/5' : 'hover:bg-accent/50'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{watchlist.name}</p>
+                          {isDropped && <StatusBadge status="dropped" showIcon={false} />}
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {watchlist.source.replace('_', ' ')}
+                        </Badge>
+                        {isDropped && droppedLink.dropped_at && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            Dropped {new Date(droppedLink.dropped_at).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
-                    )}
+                      {!isDropped && watchlist.dollar_allocation && (
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">Allocation</p>
+                          <p className="font-semibold">${watchlist.dollar_allocation.toLocaleString()}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </CardContent>
         </Card>

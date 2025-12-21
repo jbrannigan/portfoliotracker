@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { positionsApi, accountsApi, watchlistsApi, transactionsApi } from '../services/api'
+import { positionsApi, accountsApi, watchlistsApi, transactionsApi, dashboardApi } from '../services/api'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { Skeleton } from '../components/ui/skeleton'
+import { StatusBadge } from '../components/StatusBadge'
 import { TradingViewHeatmap } from '../components/widgets/TradingViewHeatmap'
 import { TradingViewTickerTape } from '../components/widgets/TradingViewTickerTape'
-import { TrendingUp, Star, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { TrendingUp, Star, Activity, ArrowUpRight, ArrowDownRight, AlertCircle } from 'lucide-react'
 
 interface HealthStatus {
   status: string
@@ -77,6 +78,13 @@ function Dashboard() {
     queryFn: () => transactionsApi.getRecent(5)
   })
 
+  const { data: needsAttentionData } = useQuery({
+    queryKey: ['dashboard', 'needs-attention'],
+    queryFn: dashboardApi.getNeedsAttention
+  })
+
+  const needsAttentionItems = needsAttentionData?.items || []
+
   // Calculate portfolio stats
   const totalPositions = positions.length
   const totalCostBasis = positions.reduce((sum, p) => sum + p.total_cost_basis, 0)
@@ -133,6 +141,60 @@ function Dashboard() {
       <div className="rounded-lg overflow-hidden border border-border">
         <TradingViewTickerTape />
       </div>
+
+      {/* Needs Attention */}
+      {needsAttentionItems.length > 0 && (
+        <Card className="border-amber-500/30 bg-amber-500/5">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-amber-500" />
+                  Needs Attention
+                </CardTitle>
+                <CardDescription>
+                  {needsAttentionItems.length} item{needsAttentionItems.length !== 1 ? 's' : ''} requiring action
+                </CardDescription>
+              </div>
+              <Link to="/positions?status=needs_action" className="text-sm text-primary hover:underline">
+                View all →
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {needsAttentionItems.slice(0, 5).map((item, idx) => (
+                <div
+                  key={`${item.symbol}-${item.watchlist}-${idx}`}
+                  className="flex items-center justify-between p-3 rounded-md bg-background/50 border border-border"
+                >
+                  <div className="flex items-center gap-3">
+                    <StatusBadge
+                      status={item.type === 'dropped' ? 'dropped' : item.type === 'buy' ? 'buy' : item.type === 'underweight' ? 'buy_more' : 'sell_some'}
+                    />
+                    <div>
+                      <Link
+                        to={`/positions/${item.symbol}`}
+                        className="text-sm font-semibold text-primary hover:underline"
+                      >
+                        {item.symbol}
+                      </Link>
+                      <p className="text-xs text-muted-foreground">
+                        {item.message}
+                      </p>
+                    </div>
+                  </div>
+                  {item.type === 'dropped' && item.dropped_at && (
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(item.dropped_at).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Two Column Layout */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

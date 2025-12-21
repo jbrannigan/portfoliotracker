@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS positions (
     symbol TEXT NOT NULL REFERENCES symbols(symbol) ON DELETE CASCADE,
     shares REAL NOT NULL,
     cost_basis REAL,
+    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'closed')),
+    closed_at TEXT,
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(account_id, symbol)
 );
@@ -82,6 +84,18 @@ CREATE TABLE IF NOT EXISTS seeking_alpha_ratings (
     eps_revision_grade TEXT,
     imported_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(symbol, watchlist_id)
+);
+
+-- Position-Watchlist Links (tracks which watchlist recommendations led to positions)
+
+CREATE TABLE IF NOT EXISTS position_watchlist_links (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_id INTEGER NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
+    watchlist_id INTEGER NOT NULL REFERENCES watchlists(id) ON DELETE CASCADE,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'dropped')),
+    linked_at TEXT NOT NULL DEFAULT (datetime('now')),
+    dropped_at TEXT,
+    UNIQUE(position_id, watchlist_id)
 );
 
 -- Transaction Log
@@ -136,6 +150,9 @@ CREATE INDEX IF NOT EXISTS idx_transactions_symbol ON transactions(symbol);
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(transaction_date);
 CREATE INDEX IF NOT EXISTS idx_motley_fool_ratings_symbol ON motley_fool_ratings(symbol);
 CREATE INDEX IF NOT EXISTS idx_seeking_alpha_ratings_symbol ON seeking_alpha_ratings(symbol);
+CREATE INDEX IF NOT EXISTS idx_position_watchlist_links_position ON position_watchlist_links(position_id);
+CREATE INDEX IF NOT EXISTS idx_position_watchlist_links_watchlist ON position_watchlist_links(watchlist_id);
+CREATE INDEX IF NOT EXISTS idx_position_watchlist_links_status ON position_watchlist_links(status);
 
 -- Views
 

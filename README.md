@@ -2,7 +2,7 @@
 
 A local-first Progressive Web App for tracking investment positions across multiple brokerage accounts and watchlists, with consolidated ratings from Motley Fool and Seeking Alpha services.
 
-**Current Status:** Backend 100% Complete | Frontend 30% Complete | Dashboard Live
+**Current Status:** Backend 100% Complete | Frontend 95% Complete | All Features Live
 
 📊 See [docs/PROGRESS.md](./docs/PROGRESS.md) for detailed implementation status
 ✅ See [docs/CHECKLIST_STATUS.md](./docs/CHECKLIST_STATUS.md) for phase-by-phase completion
@@ -98,9 +98,20 @@ This application enables an investor to:
 - Free-form notes and article links
 - Export to CSV or Excel
 
-### 5. Dashboard / Overview
+### 5. Position Tracking & Status Badges
+- **Watchlist-position links**: Track which watchlist recommendations led to purchases
+- **Status badges**: Visual indicators for actionable positions
+  - **BUY**: Watchlist recommends symbol but no position held
+  - **BUY MORE**: Position is >10% underweight vs target allocation
+  - **SELL SOME**: Position is >10% overweight vs target allocation
+  - **DROPPED**: Watchlist dropped the recommendation but you still hold shares
+- **Needs Attention dashboard**: Highlights positions requiring action
+- **Status filters**: Filter position list by status (All, Needs Action, Dropped, On Target)
+
+### 6. Dashboard / Overview
 - Portfolio summary by account
 - Performance by watchlist
+- Needs Attention section with actionable items
 - Positions needing rebalancing (actual vs target)
 - Recent transactions
 
@@ -156,17 +167,23 @@ npm run dev
 ### What's Working Now
 
 ✅ **Backend (100% Complete):**
-- REST API with 18+ endpoints
-- SQLite database with 102 symbols, 70 positions, 3 accounts
-- Schwab & Seeking Alpha import working
+- REST API with 20+ endpoints
+- SQLite database with position-watchlist tracking
+- Schwab, Seeking Alpha & Motley Fool imports
 - Alpha Vantage integration with rate limiting
 - Transaction logging with CSV/Excel export
+- Dashboard needs-attention API
 
-✅ **Frontend (30% Complete):**
-- Dashboard with real-time data
-- Navigation between pages
-- React Query data fetching
-- Tailwind UI components
+✅ **Frontend (95% Complete):**
+- Full dashboard with portfolio summary and needs attention section
+- Position list with status badges and filtering
+- Position detail with TradingView charts and watchlist status
+- Watchlist management with allocation targets
+- Account management with cascade delete
+- Transaction log with export options
+- Import wizard for all file types
+- Admin page for database maintenance
+- PWA with offline indicator
 
 ### Testing the API
 
