@@ -49,6 +49,7 @@ export default defineConfig({
   server: {
     host: true, // Listen on all addresses including LAN
     port: 5173,
+    allowedHosts: ['jims-macbook-air.local'],
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
