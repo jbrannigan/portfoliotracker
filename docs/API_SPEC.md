@@ -355,6 +355,110 @@ Import scorecard from Motley Fool CSV export.
 
 ---
 
+## Positions
+
+### GET /api/positions/summary
+
+Get all positions with aggregated data across accounts.
+
+**Response:**
+```json
+[
+  {
+    "symbol": "AAPL",
+    "company_name": "Apple Inc",
+    "sector": "Technology",
+    "total_shares": 150,
+    "total_cost_basis": 23000.00,
+    "watchlist_ids": [1, 2],
+    "watchlists": ["Alpha Picks", "Hidden Gems"]
+  }
+]
+```
+
+### GET /api/positions/dropped-links
+
+Get all positions with dropped watchlist recommendations (still holding shares but recommendation ended).
+
+**Response:**
+```json
+[
+  {
+    "position_id": 42,
+    "watchlist_id": 1,
+    "watchlist_name": "Alpha Picks",
+    "symbol": "XYZ",
+    "company_name": "XYZ Corp",
+    "shares": 100,
+    "dropped_at": "2025-12-15T10:00:00.000Z"
+  }
+]
+```
+
+### GET /api/positions/:id/watchlist-links
+
+Get all watchlist links for a specific position.
+
+**Response:**
+```json
+{
+  "position_id": 42,
+  "links": [
+    {
+      "id": 1,
+      "position_id": 42,
+      "watchlist_id": 1,
+      "status": "active",
+      "linked_at": "2025-01-15T10:00:00.000Z",
+      "dropped_at": null,
+      "watchlist_name": "Alpha Picks",
+      "watchlist_source": "seeking_alpha"
+    },
+    {
+      "id": 2,
+      "position_id": 42,
+      "watchlist_id": 3,
+      "status": "dropped",
+      "linked_at": "2025-02-01T10:00:00.000Z",
+      "dropped_at": "2025-12-01T10:00:00.000Z",
+      "watchlist_name": "Hidden Gems",
+      "watchlist_source": "motley_fool"
+    }
+  ]
+}
+```
+
+### POST /api/positions/:id/watchlist-links
+
+Create a link between a position and a watchlist.
+
+**Request:**
+```json
+{
+  "watchlist_id": 1
+}
+```
+
+**Response:**
+```json
+{
+  "id": 5,
+  "position_id": 42,
+  "watchlist_id": 1,
+  "status": "active",
+  "linked_at": "2025-12-20T10:00:00.000Z",
+  "dropped_at": null
+}
+```
+
+### DELETE /api/positions/:id/watchlist-links/:watchlistId
+
+Remove a position-watchlist link.
+
+**Response:** 204 No Content
+
+---
+
 ## Transactions
 
 ### GET /api/transactions
@@ -471,6 +575,52 @@ Force refresh quotes for specified symbols.
 ---
 
 ## Dashboard
+
+### GET /api/dashboard/needs-attention
+
+Get items requiring user action (dropped recommendations, buy signals, rebalancing needs).
+
+**Response:**
+```json
+{
+  "items": [
+    {
+      "type": "dropped",
+      "symbol": "XYZ",
+      "watchlist": "Alpha Picks",
+      "message": "XYZ dropped from Alpha Picks",
+      "position_value": 5000.00,
+      "dropped_at": "2025-12-15T10:00:00.000Z"
+    },
+    {
+      "type": "buy",
+      "symbol": "NEWSTOCK",
+      "watchlist": "Hidden Gems",
+      "message": "NEWSTOCK added to Hidden Gems - no position",
+      "target_amount": 2500.00,
+      "buy_amount": 2500.00
+    },
+    {
+      "type": "underweight",
+      "symbol": "AAPL",
+      "watchlist": "Alpha Picks",
+      "message": "AAPL is 15% underweight in Alpha Picks",
+      "target_amount": 5000.00,
+      "actual_amount": 4250.00,
+      "buy_amount": 750.00
+    },
+    {
+      "type": "overweight",
+      "symbol": "GOOGL",
+      "watchlist": "Alpha Picks",
+      "message": "GOOGL is 25% overweight in Alpha Picks",
+      "target_amount": 5000.00,
+      "actual_amount": 6250.00,
+      "sell_amount": 1250.00
+    }
+  ]
+}
+```
 
 ### GET /api/dashboard
 
